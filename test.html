@@ -1,0 +1,20 @@
+<html>
+<body>
+<script src="depless.js"></script>
+<script src="model.js"></script>
+<script src="test.js"></script>
+<script>
+
+    const user = {};
+    user.userName = "Tom";
+    user.firstName = "Thomas";
+    user.lastName = "Deniffel;";
+    assert('user-form-submitted').withInput(user).returns('user-validated-for-safe');
+
+    user.userName = null;
+    assert('user-form-submitted').withInput(user).returns('user-form-validation-error');
+
+</script>
+
+</body>
+</html>

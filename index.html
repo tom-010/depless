@@ -8,87 +8,27 @@ Last-Name: <input id="last-name-input" type="text" onchange="global('user').last
 <input type="submit" value="Save" onclick="res('user-form-submitted', global('user')); " />
 <p id="messages"></p>
 <p id="user-name-display"></p>
+
+<script src="depless.js"></script>
+<script src="backend.js"></script>
+<script src="model.js"></script>
+
 <script>
 
-    const dom = document;
+on('user-name-input', function (args) {
+    const username = args[0];
+    element('user-name-display').innerHTML = username;
+    res('user-name-displayed', element('user-name-display'));
+});
 
-    const channelsWithSubscribers = {};
+on('user-name-displayed', function(args) {
+    console.log("Hello, ", args[0].innerHTML);
+});
 
-    function res(topic /*args...*/) {
-        if(!channelsWithSubscribers[topic])
-            return;
+on('user-form-validation-error', function(args) {
+    element('messages').innerHTML = args[0];
+});
 
-        for(var i=0; i < channelsWithSubscribers[topic].length; i++) {
-            var taker = channelsWithSubscribers[topic][i];
-            if(taker) {  // v-- Arguments is not an array, we have to convert to get access to the array functions
-                const args = Array.prototype.slice.call(arguments);
-                args.splice(0,1); // The first arguemnt is the message: We don't need it as argument
-                taker(args);
-            }
-        }
-    }
-
-    function global(variableName) {
-        if(window[variableName])
-            return window[variableName];
-        window[variableName] = {};
-        return window[variableName];
-    }
-
-    function on(topic, taker) {
-        if(!channelsWithSubscribers[topic])
-            channelsWithSubscribers[topic] = [];
-        channelsWithSubscribers[topic].push(taker);
-    }
-
-    function element(id) {
-        return document.getElementById(id);
-    }
-
-    function value(domElement) {
-        return domElement.innerHTML;
-    }
-
-    on('user-create', function(args) {
-        console.log(args);
-    });
-
-    on('user-name-input', function (args) {
-        const username = args[0];
-        element('user-name-display').innerHTML = username;
-        res('user-name-displayed', element('user-name-display'));
-    });
-
-    on('user-name-displayed', function(args) {
-        console.log("Hello, ", args[0].innerHTML);
-    });
-
-    on('user-form-submitted', function(args) {
-        const user = args[0];
-
-        if(!user.userName) {
-            res('user-form-validation-error', 'User-Name must not be empty!')
-            return;
-        }
-
-        res('user-validated-for-safe', user);
-    });
-
-    on('user-form-validation-error', function(args) {
-        element('messages').innerHTML = args[0];
-    });
-
-    on('user-validated-for-safe', function(args) {
-        const request = {};
-        request.url = "www.backend.de";
-        request.method = "POST";
-        request.body = JSON.stringify(args[0]);
-        res('request-created', request);
-    });
-
-    on('request-created', function(args) {
-        console.log("Sending Request", args[0]);
-    })
 
 </script>
 </body>
