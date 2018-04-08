@@ -12,22 +12,27 @@ Last-Name: <input id="last-name-input" type="text" onchange="global('user').last
 <script src="depless.js"></script>
 <script src="backend.js"></script>
 <script src="model.js"></script>
+<script src="notification.js"></script>
+<script src="routing.js"></script>
 
 <script>
 
-on('user-name-input', function (args) {
-    const username = args[0];
-    element('user-name-display').innerHTML = username;
-    res('user-name-displayed', element('user-name-display'));
-});
 
-on('user-name-displayed', function(args) {
-    console.log("Hello, ", args[0].innerHTML);
-});
+(function userform() {
+    on('user-name-input', function (args) {
+        const username = args[0];
+        element('user-name-display').innerHTML = username;
+        res('user-name-displayed', element('user-name-display'));
+    });
 
-on('user-form-validation-error', function(args) {
-    element('messages').innerHTML = args[0];
-});
+    on('user-name-displayed', function(args) {
+        console.log("Hello, ", args[0].innerHTML);
+    });
+
+    on('user-form-validation-error', function(args) {
+        element('messages').innerHTML = args[0];
+    });
+})()
 
 
 </script>
