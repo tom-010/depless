@@ -1,22 +1,42 @@
 <html>
-<head></head>
+<head>
+    <script src="depless.js"></script>
+    <script src="backend.js"></script>
+    <script src="model.js"></script>
+    <script src="notification.js"></script>
+    <script src="routing.js"></script>
+    <style>.page{ display: none }</style>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
 <body>
 <h1 id="title">Depless</h1>
-User-Name: <input id="user-name-input" onchange="res('user-name-input', this.value); global('user').userName = this.value" type="text"/><br>
-First-Name: <input id="first-name-input" type="text" onchange="global('user').firstName = this.value"/><br>
-Last-Name: <input id="last-name-input" type="text" onchange="global('user').lastName = this.value"/><br>
-<input type="submit" value="Save" onclick="res('user-form-submitted', global('user')); " />
-<p id="messages"></p>
-<p id="user-name-display"></p>
 
-<script src="depless.js"></script>
-<script src="backend.js"></script>
-<script src="model.js"></script>
-<script src="notification.js"></script>
-<script src="routing.js"></script>
+<ul>
+    <li><a onclick="res('routing', 'list-users')" href="#list-users">All Users</a></li>
+    <li><a onclick="res('routing', 'user-form')" href="#user-form">Create User</a></li>
+</ul>
+
+
+<div id="list-users" class="page">
+    <h2>List Users</h2>
+    <ul>
+        <li>User 1</li>
+        <li>User 2</li>
+    </ul>
+</div>
+
+<div id="user-form" class="page">
+    <h2>User-Form</h2>
+    User-Name: <input id="user-name-input" onchange="res('user-name-input', this.value); global('user').userName = this.value" type="text"/><br>
+    First-Name: <input id="first-name-input" type="text" onchange="global('user').firstName = this.value"/><br>
+    Last-Name: <input id="last-name-input" type="text" onchange="global('user').lastName = this.value"/><br>
+    <input type="submit" value="Save" onclick="res('user-form-submitted', global('user')); " />
+    <p id="messages"></p>
+    <p id="user-name-display"></p>
+</div>
 
 <script>
-
 
 (function userform() {
     on('user-name-input', function (args) {
@@ -32,9 +52,15 @@ Last-Name: <input id="last-name-input" type="text" onchange="global('user').last
     on('user-form-validation-error', function(args) {
         element('messages').innerHTML = args[0];
     });
-})()
+
+    on('default-route', function(args) {
+        return['routing', 'user-form']
+    });
+
+})();
 
 
+send('application-started');
 </script>
 </body>
 </html>
