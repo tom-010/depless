@@ -22,7 +22,7 @@ Last-Name: <input id="last-name-input" type="text" onchange="global('user').last
     on('user-name-input', function (args) {
         const username = args[0];
         element('user-name-display').innerHTML = username;
-        res('user-name-displayed', element('user-name-display'));
+        return ['user-name-displayed', element('user-name-display')];
     });
 
     on('user-name-displayed', function(args) {

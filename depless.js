@@ -1,3 +1,8 @@
+/**
+ * For accessing the dom. In an extra variable instead of document for the ability to install
+ * mocks, spies, etc in this variable
+ * @type {Document}
+ */
 const dom = document;
 
 const channelsWithSubscribers = {};
@@ -18,7 +23,10 @@ function res(topic /*, args...*/) {
         if(taker) {  // v-- Arguments is not an array, we have to convert to get access to the array functions
             const args = Array.prototype.slice.call(arguments);
             args.splice(0,1); // The first arguemnt is the message: We don't need it as argument
-            taker(args);
+            var result = taker(args);
+            if(result) {
+                res.apply(this, result);
+            }
         }
     }
 }
