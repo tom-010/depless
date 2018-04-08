@@ -2,18 +2,18 @@
 <body>
 <script src="depless.js"></script>
 <script src="model.js"></script>
-<script src="test.js"></script>
+
 <script>
-
-    const user = {};
-    user.userName = "Tom";
-    user.firstName = "Thomas";
-    user.lastName = "Deniffel;";
-    assert('user-form-submitted').withInput(user).returns('user-validated-for-safe');
-
-    user.userName = null;
-    assert('user-form-submitted').withInput(user).returns('user-form-validation-error');
-
+    testLog = function(/* arguments */) {
+        var message = "";
+        for(var i=0; i<arguments.length; i++)
+            if(typeof arguments[i] === 'object')
+                message += JSON.stringify(arguments[i]) + " ";
+            else
+                message += arguments[i] + " ";
+        document.body.innerHTML += '<p>'+message+'</p>';
+    };
+    testExamples();
 </script>
 
 </body>

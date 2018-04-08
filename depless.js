@@ -1,6 +1,8 @@
 const dom = document;
 
 const channelsWithSubscribers = {};
+const examples = [];
+
 
 function res(topic /*args...*/) {
     if(!channelsWithSubscribers[topic])
@@ -23,10 +25,12 @@ function global(variableName) {
     return window[variableName];
 }
 
-function on(topic, taker) {
+function on(topic, taker, functionExamples) {
     if(!channelsWithSubscribers[topic])
         channelsWithSubscribers[topic] = [];
     channelsWithSubscribers[topic].push(taker);
+    if(functionExamples)
+        examples.push(functionExamples);
 }
 
 function element(id) {
@@ -36,3 +40,42 @@ function element(id) {
 function value(domElement) {
     return domElement.innerHTML;
 }
+
+function testExamples() {
+    for(var i=0; i<examples.length; i++) {
+        examples[i]();
+    }
+}
+
+var testLog = function(/* messages */) {
+    console.log(arguments); // default logger;
+};
+
+function assert(functionName) {
+    return {
+        withInput: function(args) {
+            return {
+                returns: function(topic, expectedValue) {
+                    var wasCalled = false;
+                    var ok = true;
+                    on(topic, function (resultArgs) {
+                        wasCalled = true;
+                    });
+
+                    res(topic, args);
+
+                    if(!wasCalled) {
+                        testLog('FAIL: ', "Did not trigger topic '"+topic+"'")
+                        ok = false;
+                    }
+
+                    if(ok) {
+                        testLog('SUCCESS: ', topic, args);
+                    }
+                }
+            }
+        }
+    }
+}
+
+var say = assert;

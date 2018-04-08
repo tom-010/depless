@@ -8,6 +8,7 @@ on('user-validated-for-safe', function(args) {
     res('request-created', request);
 });
 
+
 on('user-form-submitted', function(args) {
     const user = args[0];
     if(!user.userName) {
@@ -16,4 +17,13 @@ on('user-form-submitted', function(args) {
     }
 
     res('user-validated-for-safe', user);
+
+}, function examples(){
+    say('user-form-submitted')
+        .withInput({userName: "Tom", firstName: "T", lastName: "D"})
+        .returns('user-validated-for-safe');
+
+    say('user-form-submitted')
+        .withInput({userName: null, firstName: "T", lastName: "D"})
+        .returns('user-form-validation-error');
 });
