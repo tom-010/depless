@@ -1,8 +1,16 @@
 <html>
 <head></head>
-<body><h1 id="title">Depless</h1></body>
-
+<body>
+<h1 id="title">Depless</h1>
+User-Name: <input id="user-name-input" onchange="res('user-name-input', this.value); global('user').userName = this.value" type="text"/><br>
+First-Name: <input id="first-name-input" type="text" onchange="global('user').firstName = this.value"/><br>
+Last-Name: <input id="last-name-input" type="text" onchange="global('user').lastName = this.value"/><br>
+<input type="submit" value="Save" onclick="res('user-form-submitted', global('user')); " />
+<p id="messages"></p>
+<p id="user-name-display"></p>
 <script>
+
+    const dom = document;
 
     const channelsWithSubscribers = {};
 
@@ -12,7 +20,6 @@
 
         for(var i=0; i < channelsWithSubscribers[topic].length; i++) {
             var taker = channelsWithSubscribers[topic][i];
-            console.log(arguments);
             if(taker) {  // v-- Arguments is not an array, we have to convert to get access to the array functions
                 const args = Array.prototype.slice.call(arguments);
                 args.splice(0,1); // The first arguemnt is the message: We don't need it as argument
@@ -21,13 +28,20 @@
         }
     }
 
+    function global(variableName) {
+        if(window[variableName])
+            return window[variableName];
+        window[variableName] = {};
+        return window[variableName];
+    }
+
     function on(topic, taker) {
         if(!channelsWithSubscribers[topic])
             channelsWithSubscribers[topic] = [];
         channelsWithSubscribers[topic].push(taker);
     }
 
-    function dom(id) {
+    function element(id) {
         return document.getElementById(id);
     }
 
@@ -39,8 +53,43 @@
         console.log(args);
     });
 
-    res('user-create', 'a', 'b', 'c');
+    on('user-name-input', function (args) {
+        const username = args[0];
+        element('user-name-display').innerHTML = username;
+        res('user-name-displayed', element('user-name-display'));
+    });
 
+    on('user-name-displayed', function(args) {
+        console.log("Hello, ", args[0].innerHTML);
+    });
+
+    on('user-form-submitted', function(args) {
+        const user = args[0];
+
+        if(!user.userName) {
+            res('user-form-validation-error', 'User-Name must not be empty!')
+            return;
+        }
+
+        res('user-validated-for-safe', user);
+    });
+
+    on('user-form-validation-error', function(args) {
+        element('messages').innerHTML = args[0];
+    });
+
+    on('user-validated-for-safe', function(args) {
+        const request = {};
+        request.url = "www.backend.de";
+        request.method = "POST";
+        request.body = JSON.stringify(args[0]);
+        res('request-created', request);
+    });
+
+    on('request-created', function(args) {
+        console.log("Sending Request", args[0]);
+    })
 
 </script>
+</body>
 </html>
