@@ -14,6 +14,57 @@
         document.body.innerHTML += '<p>'+message+'</p>';
     };
     testExamples();
+
+
+    var send = res;
+    var scenarios = [];
+
+    function scenario(s) {
+        scenarios.push(s);
+    }
+
+    function runScenarios() {
+        for(var i=0; i<scenarios.length; i++) {
+            var ok = true;
+            var errorMessage = "";
+
+            scenarios[i](function(message) {
+                ok = false;
+                errorMessage = message;
+            });
+
+            if(ok) {
+               testLog("SUCCESS: " + scenarios[i].name);
+            } else {
+                testLog("ERROR: " + scenarios[i].name + " - " + errorMessage);
+            }
+        }
+    }
+
+    scenario(function userFormSubmitted_sendsToServer(fail) {
+
+        const user = {userName: "Tom", firstName: "T", lastName: "D"};
+        var wasCalled = false;
+
+        on('request-created', function(args) {
+            wasCalled = true;
+            if(!args[0]) { fail('No request was generated'); return};
+            if(!args[0].body) { fail('No body was generated'); return; }
+            if(args[0].body !== JSON.stringify(user)) { fail('The request body is wrong: ' + args[0].body + ' instead of ' + JSON.stringify(user)); return };
+        });
+
+        send('user-form-submitted', user);
+
+        if(!wasCalled)
+            fail('request-created was not called');
+
+    });
+
+
+
+    runScenarios();
+
+
 </script>
 
 </body>

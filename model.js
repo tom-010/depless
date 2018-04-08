@@ -8,7 +8,6 @@
         res('request-created', request, 'handle-server-user-created');
     });
 
-
     on('user-form-submitted', function(args) {
         const user = args[0];
         if(!user.userName) {
@@ -17,7 +16,6 @@
         }
 
         res('user-validated-for-safe', user);
-
     }, function forExample(){
         say('user-form-submitted')
             .withInput({userName: "Tom", firstName: "T", lastName: "D"})
@@ -37,6 +35,5 @@
         res('notify', args[0].userName + ' created');
         res('routing', 'list-users')
     });
-
 
 })();
