@@ -8,6 +8,7 @@
             else
                 pages[i].style.display = "none";
         }
+        return [args[0]+"-loaded"]
     });
 
     function routeFromUrl() {
@@ -19,8 +20,6 @@
 
     on('application-started', function(args) {
         var route = routeFromUrl();
-
-        console.log(route);
 
         if(route)
             return ['routing', route];

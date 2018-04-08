@@ -20,9 +20,7 @@
 
 <div id="list-users" class="page">
     <h2>List Users</h2>
-    <ul>
-        <li>User 1</li>
-        <li>User 2</li>
+    <ul id="user-list">
     </ul>
 </div>
 
@@ -38,7 +36,7 @@
 
 <script>
 
-(function userform() {
+(function userForm() {
     on('user-name-input', function (args) {
         const username = args[0];
         element('user-name-display').innerHTML = username;
@@ -54,9 +52,22 @@
     });
 
     on('default-route', function(args) {
-        return['routing', 'user-form']
+        return['routing', 'user-form'];
     });
 
+})();
+
+(function listUsers() {
+    on('list-users-loaded', function (args) {
+        return ['user-fetch', 'user-fetched'];
+    });
+
+    on('user-fetched', function(args) {
+        var users = args[0];
+        element('user-list').innerHTML = "";
+        for(var i=0; i<users.length; i++)
+            element('user-list').innerHTML += "<li>"+ users[i].userName + "</li>";
+    })
 })();
 
 
