@@ -32,7 +32,8 @@ function res(topic /*, args...*/) {
             _sendMessageToTaker(channelsWithSubscribers['after'][topic][i], arguments);
 }
 
-function _sendMessageToTaker(taker, args) {
+
+/*private*/ function _sendMessageToTaker(taker, args) {
     if(!taker)
         return; // v-- Arguments is not an array, we have to convert to get access to the array functions
     args = Array.prototype.slice.call(args);
@@ -56,10 +57,27 @@ function global(variableName) {
     return window[variableName];
 }
 
-
+/**
+ * This method is like on, but every taker here is called before the first taker on the on channel
+ * @param topic See on function
+ * @param taker See on function
+ * @param functionExamples See on function
+ */
 function before(topic, taker, functionExamples) {
     _subscribe('before', topic, taker, functionExamples);
 }
+
+/**
+ * This is the counter-part to before: Every function that is registered with after is called after the last
+ * function that was registered with on.
+ * @param topic
+ * @param taker
+ * @param functionExamples
+ */
+function after(topic, taker, functionExamples) {
+    _subscribe('after', topic, taker, functionExamples);
+}
+
 
 /**
  * To Listen for a topic and get called, when a message is published in the channel of the topic.
