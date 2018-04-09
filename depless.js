@@ -35,12 +35,12 @@ function res(topic /*, args...*/) {
 
 /*private*/ function _sendMessageToTaker(taker, args) {
     if(!taker)
-        return; // v-- Arguments is not an array, we have to convert to get access to the array functions
-    args = Array.prototype.slice.call(args);
-    args.splice(0,1); // The first arguemnt is the message: We don't need it as argument
-    var result = taker(args);
-    if(result)
-        res.apply(this, result);
+        return;
+    args = Array.prototype.slice.call(args); // Arguments is not an array, we have to convert to get access to the array functions
+    args.splice(0,1); // The first argument is the message: We don't need it as argument
+    var result = taker(args);    // |-> The taker can return an array what is equivalent with calling 'res([..]); return'
+    if(result)                   // |   These three lines enables this short version
+        res.apply(this, result); // |
 }
 
 /**
@@ -130,9 +130,8 @@ function value(domElement) {
  * Runs all examples as tests
  */
 function testExamples() {
-    for(var i=0; i<examples.length; i++) {
+    for(var i=0; i<examples.length; i++)
         examples[i]();
-    }
 }
 
 /**
