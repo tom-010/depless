@@ -54,6 +54,17 @@ function res(topic /*, args...*/) {
         res.apply(this, result); // |
 }
 
+/**
+ * Like the res function but only for the frontend. This one enforces some contraints so that coupling to the FE is
+ * not possible
+ * @param topic see res function
+ * @param params... see res function
+ */
+function fe(topic /*, args...*/) {
+    // TODO: enforce only array, map and simple datatypes
+    res.apply(this, arguments);
+}
+
 function printTrace() {
     console.log("--- Trace Start (most recent first) ---");
     callHistory.reverse().forEach(function(entry) {
@@ -106,6 +117,7 @@ function after(topic, taker, functionExamples) {
 function on(topic, taker, functionExamples) {
     _subscribe('on', topic, taker, functionExamples);
 }
+
 
 function _subscribe(type, topic, taker, functionExamples) {
     if(!channelsWithSubscribers[type][topic])

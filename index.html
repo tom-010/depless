@@ -10,31 +10,52 @@
     <script src="index.js"></script>
 
     <style>.page{ display: none }</style>
+    <link rel="stylesheet" type="text/css" href="milligram.css">
     <link rel="stylesheet" type="text/css" href="style.css">
 
 </head>
 <body>
-<h1 id="title">Depless</h1>
+<div class="container">
+    <h1 id="title">Depless</h1>
 
-<ul>
-    <li><a onclick="res('routing', 'list-users')" href="#list-users">All Users</a></li>
-    <li><a onclick="res('routing', 'user-form')" href="#user-form">Create User</a></li>
-</ul>
+    <a onclick="fe('routing', 'list-users')" href="#list-users" class="button button-outline">All Users</a>
+    <a onclick="fe('routing', 'user-form')" href="#user-form" class="button button-outline">Create User</a>
+
 
 <div id="list-users" class="page">
     <h2>List Users</h2>
-    <ul id="user-list">
-    </ul>
+    <table>
+        <thead>
+            <th>User Name</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+        </thead>
+        <tbody id="user-list"></tbody>
+    </table>
 </div>
 
 <div id="user-form" class="page">
     <h2>User-Form</h2>
-    User-Name: <input id="user-name-input" onchange="res('user-name-input', this.value); global('user').userName = this.value" type="text"/><br>
-    First-Name: <input id="first-name-input" type="text" onchange="global('user').firstName = this.value"/><br>
-    Last-Name: <input id="last-name-input" type="text" onchange="global('user').lastName = this.value"/><br>
-    <input type="submit" value="Save" onclick="res('user-form-submitted', global('user')); " />
-    <p id="messages"></p>
-    <p id="user-name-display"></p>
+    <div class="row">
+        <div class="column column-10">User-Name:</div><div class="column"><input id="user-name-input" onchange="fe('user-name-input', this.value); global('user').userName = this.value" type="text"/><br></div>
+    </div>
+    <div class="row">
+        <div class="column column-10">First-Name:</div><div class="column"><input id="first-name-input" type="text" onchange="global('user').firstName = this.value"/><br></div>
+    </div>
+    <div class="row">
+        <div class="column column-10">Last-Name:</div><div class="column"><input id="last-name-input" type="text" onchange="global('user').lastName = this.value"/><br></div>
+    </div>
+    <div class="row">
+        <div class="column">
+            <input type="submit" value="Save" onclick="fe('user-form-submitted', global('user')); " />
+        </div>
+    </div>
+    <div class="row">
+        <p id="messages"></p>
+        <p id="user-name-display"></p>
+    </div>
+</div>
+
 </div>
 
 <script>
