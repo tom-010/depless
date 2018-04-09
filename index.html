@@ -1,11 +1,13 @@
 <html>
 <head>
     <script src="depless.js"></script>
+
     <script src="backend.js"></script>
     <script src="userRepo.js"></script>
     <script src="model.js"></script>
     <script src="notification.js"></script>
     <script src="routing.js"></script>
+    <script src="index.js"></script>
 
     <style>.page{ display: none }</style>
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -18,7 +20,6 @@
     <li><a onclick="res('routing', 'list-users')" href="#list-users">All Users</a></li>
     <li><a onclick="res('routing', 'user-form')" href="#user-form">Create User</a></li>
 </ul>
-
 
 <div id="list-users" class="page">
     <h2>List Users</h2>
@@ -37,40 +38,6 @@
 </div>
 
 <script>
-
-(function userForm() {
-    on('user-name-input', function (args) {
-        const username = args[0];
-        element('user-name-display').innerHTML = username;
-        return ['user-name-displayed', element('user-name-display')];
-    });
-
-    on('user-name-displayed', function(args) {
-        console.log("Hello, ", args[0].innerHTML);
-    });
-
-    on('user-form-validation-error', function(args) {
-        element('messages').innerHTML = args[0];
-    });
-
-    on('default-route', function(args) {
-        return['routing', 'user-form'];
-    });
-
-})();
-
-(function listUsers() {
-    on('list-users-loaded', function (args) {
-        return ['user-fetch', 'user-fetched'];
-    });
-
-    on('user-fetched', function(args) {
-        var users = args[0];
-        element('user-list').innerHTML = "";
-        for(var i=0; i<users.length; i++)
-            element('user-list').innerHTML += "<li>"+ users[i].userName + "</li>";
-    })
-})();
 
 send('application-started');
 </script>

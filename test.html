@@ -3,6 +3,8 @@
 <script src="depless.js"></script>
 <script src="backend.js"></script>
 <script src="model.js"></script>
+<script src="userRepo.js"></script>
+<script src="index.js"></script>
 
 <script>
     testLog = function(/* arguments */) {
@@ -25,7 +27,7 @@
             wasCalled = true;
             if(!args[0]) { fail('No request was generated'); return}
             if(!args[0].body) { fail('No body was generated'); return; }
-            if(args[0].body !== JSON.stringify(user)) { fail('The request body is wrong: ' + args[0].body + ' instead of ' + JSON.stringify(user)); return }
+            if(!(args[0].body === JSON.stringify(user))) { fail('The request body is wrong: ' + args[0].body + ' instead of ' + JSON.stringify(user)); return }
         });
 
         send('user-form-submitted', user);

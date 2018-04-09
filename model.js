@@ -19,6 +19,7 @@
             .withInput({userName: "Tom", firstName: "T", lastName: "D"})
             .returns('user-validated-for-safe');
 
+        element = function() { return {}}; // mock
         say('user-form-submitted')
             .withInput({userName: null, firstName: "T", lastName: "D"})
             .returns('user-form-validation-error');

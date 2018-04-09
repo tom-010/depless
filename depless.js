@@ -7,6 +7,7 @@ const dom = document;
 
 const channelsWithSubscribers = {before: {}, on: {}, after: {}};
 const examples = [];
+const history = [];
 
 /**
  * Like return in other systems. This method triggers a message that gets published
@@ -19,28 +20,37 @@ function res(topic /*, args...*/) {
         return;
 
     var i = 0;
+    var caller = res.caller;
 
     if(channelsWithSubscribers['before'][topic])
         for(i=0; i < channelsWithSubscribers['before'][topic].length; i++)
-            _sendMessageToTaker(channelsWithSubscribers['before'][topic][i], arguments);
+            _sendMessageToTaker(channelsWithSubscribers['before'][topic][i], arguments, caller);
 
     for(i=0; i < channelsWithSubscribers['on'][topic].length; i++)
-        _sendMessageToTaker(channelsWithSubscribers['on'][topic][i], arguments);
+        _sendMessageToTaker(channelsWithSubscribers['on'][topic][i], arguments, caller);
 
     if(channelsWithSubscribers['after'][topic])
         for(i=0; i < channelsWithSubscribers['after'][topic].length; i++)
-            _sendMessageToTaker(channelsWithSubscribers['after'][topic][i], arguments);
+            _sendMessageToTaker(channelsWithSubscribers['after'][topic][i], arguments, caller);
 }
 
-
-/*private*/ function _sendMessageToTaker(taker, args) {
+/*private*/ function _sendMessageToTaker(taker, args, caller) {
     if(!taker)
         return;
     args = Array.prototype.slice.call(args); // Arguments is not an array, we have to convert to get access to the array functions
-    args.splice(0,1); // The first argument is the message: We don't need it as argument
+    var functionName = args.splice(0,1)[0]; // The first argument is the message: We don't need it as argument
+    history.push({function: functionName, arguments: args, caller: caller});
     var result = taker(args);    // |-> The taker can return an array what is equivalent with calling 'res([..]); return'
     if(result)                   // |   These three lines enables this short version
         res.apply(this, result); // |
+}
+
+function printTrace() {
+    console.log("--- Trace Start (most recent first) ---");
+    history.reverse().forEach(function(entry) {
+        console.log(entry.function, entry.arguments, entry.caller.name);
+    });
+    console.log("--- Trace End -------------------------");
 }
 
 /**
@@ -78,7 +88,6 @@ function after(topic, taker, functionExamples) {
     _subscribe('after', topic, taker, functionExamples);
 }
 
-
 /**
  * To Listen for a topic and get called, when a message is published in the channel of the topic.
  * @param topic The topic of the channel, where the taker should listen
@@ -113,9 +122,9 @@ function only(topic, taker) {
  * @param id The HTML-ID of the desired element
  * @returns {HTMLElement | null}
  */
-function element(id) {
+var element = function(id) {
     return document.getElementById(id);
-}
+};
 
 /**
  * Helper function to extract the value of a given HTMLElement
