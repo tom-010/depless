@@ -1,9 +1,7 @@
 (function userForm() {
-
     on('default-route', function(args) {
         return['routing', 'user-form'];
     });
-
 })();
 
 (function listUsers() {

@@ -9,22 +9,22 @@
     <script src="routing.js"></script>
     <script src="index.js"></script>
 
-    <style>.page{ display: none }</style>
-    <link rel="stylesheet" type="text/css" href="milligram.css">
-    <link rel="stylesheet" type="text/css" href="style.css">
 
+    <link rel="stylesheet" type="text/css" href="milligram.css">
+    <style>.page{ display: none }</style>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 <div class="container">
+
+<header>
     <h1 id="title">Depless</h1>
 
     <a onclick="fe('routing', 'list-users')" href="#list-users" class="button button-outline">All Users</a>
     <a onclick="fe('routing', 'user-form')" href="#user-form" class="button button-outline">Create User</a>
+</header>
 
-
-
-
-<div id="list-users" class="page">
+<div class="page" id="list-users" >
     <h2>List Users</h2>
     <table>
         <thead>
@@ -51,10 +51,7 @@
 
     </script>
 </div>
-
-
-
-<div id="user-form" class="page">
+<div class="page" id="user-form" >
     <h2>User-Form</h2>
     <div class="row">
         <div class="column column-10">User-Name:</div><div class="column"><input id="user-name-input" onchange="fe('user-name-input', this.value); global('user').userName = this.value" type="text"/><br></div>
@@ -85,13 +82,15 @@
                     element('user-list').innerHTML += " <tr><td>"+ users[i].userName +
                         "</td><td>" + users[i].firstName +
                         "</td><td>" + users[i].lastName + "</td></tr>";
-            })
+            });
 
         })();
     </script>
 </div>
 
-
+<footer>
+    Copyright by Thomas Deniffel
+</footer>
 
 </div>
 <script>
