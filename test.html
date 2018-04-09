@@ -32,8 +32,11 @@
 
         send('user-form-submitted', user);
 
-        if(!wasCalled)
+        if(!wasCalled) {
+            printTrace();
             fail('request-created was not called');
+        }
+
     });
 
     runScenarios();

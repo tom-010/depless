@@ -3,11 +3,20 @@
  * mocks, spies, etc in this variable
  * @type {Document}
  */
-const dom = document;
+var dom = document;
 
-const channelsWithSubscribers = {before: {}, on: {}, after: {}};
-const examples = [];
-const history = [];
+var channelsWithSubscribers;
+var examples = [];
+var callHistory;
+channelsWithSubscribers = {before: {}, on: {}, after: {}};
+
+
+function init() {
+    callHistory = [];
+}
+init();
+const resetEnvironment = init
+
 
 /**
  * Like return in other systems. This method triggers a message that gets published
@@ -39,7 +48,7 @@ function res(topic /*, args...*/) {
         return;
     args = Array.prototype.slice.call(args); // Arguments is not an array, we have to convert to get access to the array functions
     var functionName = args.splice(0,1)[0]; // The first argument is the message: We don't need it as argument
-    history.push({function: functionName, arguments: args, caller: caller});
+    callHistory.push({function: functionName, arguments: args, caller: caller});
     var result = taker(args);    // |-> The taker can return an array what is equivalent with calling 'res([..]); return'
     if(result)                   // |   These three lines enables this short version
         res.apply(this, result); // |
@@ -47,7 +56,7 @@ function res(topic /*, args...*/) {
 
 function printTrace() {
     console.log("--- Trace Start (most recent first) ---");
-    history.reverse().forEach(function(entry) {
+    callHistory.reverse().forEach(function(entry) {
         console.log(entry.function, entry.arguments, entry.caller.name);
     });
     console.log("--- Trace End -------------------------");
@@ -139,8 +148,11 @@ function value(domElement) {
  * Runs all examples as tests
  */
 function testExamples() {
-    for(var i=0; i<examples.length; i++)
+    for(var i=0; i<examples.length; i++) {
+        resetEnvironment();
         examples[i]();
+    }
+
 }
 
 /**
@@ -215,6 +227,7 @@ function scenario(s) {
  */
 function runScenarios() {
     for(var i=0; i<scenarios.length; i++) {
+        resetEnvironment();
         var ok = true;
         var errorMessage = "";
 
