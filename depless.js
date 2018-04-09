@@ -118,6 +118,15 @@ function on(topic, taker, functionExamples) {
     _subscribe('on', topic, taker, functionExamples);
 }
 
+/**
+ * This is like on but only for frontends. It is not intended, that this method calls res.
+ * No logic here! Just injecting data in HTML
+ * @param topic see on
+ * @param taker see on
+ */
+function listenToInject(topic, taker) {
+    on(topic, taker);
+}
 
 function _subscribe(type, topic, taker, functionExamples) {
     if(!channelsWithSubscribers[type][topic])

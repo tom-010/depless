@@ -22,6 +22,8 @@
     <a onclick="fe('routing', 'user-form')" href="#user-form" class="button button-outline">Create User</a>
 
 
+
+
 <div id="list-users" class="page">
     <h2>List Users</h2>
     <table>
@@ -32,7 +34,25 @@
         </thead>
         <tbody id="user-list"></tbody>
     </table>
+
+    <script>
+
+        (function userFormInjector() {
+            listenToInject('user-name-input', function (args) {
+                const username = args[0];
+                element('user-name-display').innerHTML = username;
+            });
+
+            listenToInject('user-form-validation-error', function(args) {
+                element('messages').innerHTML = args[0];
+            });
+
+        })();
+
+    </script>
 </div>
+
+
 
 <div id="user-form" class="page">
     <h2>User-Form</h2>
@@ -54,13 +74,28 @@
         <p id="messages"></p>
         <p id="user-name-display"></p>
     </div>
+
+    <script>
+        (function listUsersInjector() {
+
+            listenToInject('user-fetched', function(args) {
+                var users = args[0];
+                element('user-list').innerHTML = "";
+                for(var i=0; i<users.length; i++)
+                    element('user-list').innerHTML += " <tr><td>"+ users[i].userName +
+                        "</td><td>" + users[i].firstName +
+                        "</td><td>" + users[i].lastName + "</td></tr>";
+            })
+
+        })();
+    </script>
 </div>
 
-</div>
 
+
+</div>
 <script>
-
-send('application-started');
+    send('application-started');
 </script>
 </body>
 </html>
