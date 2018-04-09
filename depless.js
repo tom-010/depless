@@ -5,7 +5,7 @@
  */
 const dom = document;
 
-const channelsWithSubscribers = {};
+const channelsWithSubscribers = {before: {}, on: {}, after: {}};
 const examples = [];
 
 /**
@@ -15,20 +15,31 @@ const examples = [];
  * @param params... Prams, that are given to the listener
  */
 function res(topic /*, args...*/) {
-    if(!channelsWithSubscribers[topic])
+    if(!channelsWithSubscribers['on'][topic])
         return;
 
-    for(var i=0; i < channelsWithSubscribers[topic].length; i++) {
-        var taker = channelsWithSubscribers[topic][i];
-        if(taker) {  // v-- Arguments is not an array, we have to convert to get access to the array functions
-            const args = Array.prototype.slice.call(arguments);
-            args.splice(0,1); // The first arguemnt is the message: We don't need it as argument
-            var result = taker(args);
-            if(result) {
-                res.apply(this, result);
-            }
-        }
-    }
+    var i = 0;
+
+    if(channelsWithSubscribers['before'][topic])
+        for(i=0; i < channelsWithSubscribers['before'][topic].length; i++)
+            _sendMessageToTaker(channelsWithSubscribers['before'][topic][i], arguments);
+
+    for(i=0; i < channelsWithSubscribers['on'][topic].length; i++)
+        _sendMessageToTaker(channelsWithSubscribers['on'][topic][i], arguments);
+
+    if(channelsWithSubscribers['after'][topic])
+        for(i=0; i < channelsWithSubscribers['after'][topic].length; i++)
+            _sendMessageToTaker(channelsWithSubscribers['after'][topic][i], arguments);
+}
+
+function _sendMessageToTaker(taker, args) {
+    if(!taker)
+        return; // v-- Arguments is not an array, we have to convert to get access to the array functions
+    args = Array.prototype.slice.call(args);
+    args.splice(0,1); // The first arguemnt is the message: We don't need it as argument
+    var result = taker(args);
+    if(result)
+        res.apply(this, result);
 }
 
 /**
@@ -45,6 +56,11 @@ function global(variableName) {
     return window[variableName];
 }
 
+
+function before(topic, taker, functionExamples) {
+    _subscribe('before', topic, taker, functionExamples);
+}
+
 /**
  * To Listen for a topic and get called, when a message is published in the channel of the topic.
  * @param topic The topic of the channel, where the taker should listen
@@ -52,9 +68,13 @@ function global(variableName) {
  * @param functionExamples Examples of usage in form of unit tests with input data and output-data check. This function will executed when the tests are executed and the examples are part of the documentation of the function.
  */
 function on(topic, taker, functionExamples) {
-    if(!channelsWithSubscribers[topic])
-        channelsWithSubscribers[topic] = [];
-    channelsWithSubscribers[topic].push(taker);
+    _subscribe('on', topic, taker, functionExamples);
+}
+
+function _subscribe(type, topic, taker, functionExamples) {
+    if(!channelsWithSubscribers[type][topic])
+        channelsWithSubscribers[type][topic] = [];
+    channelsWithSubscribers[type][topic].push(taker);
     if(functionExamples)
         examples.push(functionExamples);
 }
@@ -66,7 +86,7 @@ function on(topic, taker, functionExamples) {
  * @param taker The taker that will be called when a message is published in the channel of the topic
  */
 function only(topic, taker) {
-    channelsWithSubscribers[topic] = [];
+    channelsWithSubscribers['on'][topic] = [];
     on(topic, taker);
 }
 
@@ -110,10 +130,8 @@ var testLog = function(/* messages */) {
  * @param functionName
  * @returns {{withInput: withInput}}
  */
-function assert(functionName) {
-    return {
-        withInput: function(args) {
-            return {
+function assert(functionName) { return {
+        withInput: function(args) {return {
                 returns: function(topic, expectedValue) {
                     var wasCalled = false;
                     var ok = true;
@@ -124,7 +142,7 @@ function assert(functionName) {
                     res(topic, args);
 
                     if(!wasCalled) {
-                        testLog('FAIL: ', "Did not trigger topic '"+topic+"'")
+                        testLog('FAIL: ', "Did not trigger topic '"+topic+"'");
                         ok = false;
                     }
 

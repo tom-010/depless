@@ -2,9 +2,11 @@
 <head>
     <script src="depless.js"></script>
     <script src="backend.js"></script>
+    <script src="userRepo.js"></script>
     <script src="model.js"></script>
     <script src="notification.js"></script>
     <script src="routing.js"></script>
+
     <style>.page{ display: none }</style>
     <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -69,7 +71,6 @@
             element('user-list').innerHTML += "<li>"+ users[i].userName + "</li>";
     })
 })();
-
 
 send('application-started');
 </script>
